@@ -27,9 +27,9 @@ use const PHP_INT_MAX, SEEK_END, SEEK_SET;
  * @link https://www.mp3tag.de/en/
  * @link https://github.com/taglib/taglib/tree/master/tests
  */
-class ID3{
+final class ID3{
 
-	protected const BITRATES = [
+	private const BITRATES = [
 		0b0000 => [  0,   0,   0,   0,   0],
 		0b0001 => [ 32,  32,  32,  32,   8],
 		0b0010 => [ 64,  48,  40,  48,  16],
@@ -48,7 +48,7 @@ class ID3{
 		0b1111 => [ -1,  -1,  -1,  -1,  -1],
 	];
 
-	protected const SAMPLE_RATES = [
+	private const SAMPLE_RATES = [
 		0b00 => [
 			0b00 => 11025,
 			0b01 => 12000,
@@ -72,7 +72,7 @@ class ID3{
 	/**
 	 * "Xing"/"Info" identification string at 0x0D (13), 0x15 (21) or 0x24 (36)
 	 */
-	protected const VBR_ID_STRING_POS = [
+	private const VBR_ID_STRING_POS = [
 		// v2.5
 		0b00 => [
 			0b00 => 21, // stereo
@@ -99,7 +99,7 @@ class ID3{
 	/**
 	 * @var resource
 	 */
-	protected $fh;
+	private $fh;
 
 	/**
 	 * @return void
@@ -171,7 +171,7 @@ class ID3{
 	 *
 	 * @noinspection PhpUnusedLocalVariableInspection
 	 */
-	protected function readID3v2Tag(string $rawdata):?array{
+	private function readID3v2Tag(string $rawdata):?array{
 
 		/**
 		 * 3.1. ID3v2 header
@@ -286,7 +286,7 @@ class ID3{
 	/**
 	 *
 	 */
-	protected function getMP3Stats(int $filesize, int $v1Tagsize, int $v2Tagsize):array{
+	private function getMP3Stats(int $filesize, int $v1Tagsize, int $v2Tagsize):array{
 		$offset     = $this->getMP3FrameStart($filesize, $v1Tagsize, $v2Tagsize);
 		$framecount = 0;
 		$duration   = 0.0;
@@ -353,7 +353,7 @@ class ID3{
 	/**
 	 *
 	 */
-	protected function getMP3FrameStart(int $filesize, int $v1Tagsize, int $offset):?int{
+	private function getMP3FrameStart(int $filesize, int $v1Tagsize, int $offset):?int{
 		fseek($this->fh, $offset, SEEK_SET);
 		$size = $filesize - $v1Tagsize;
 
@@ -386,7 +386,7 @@ class ID3{
 	/**
 	 *
 	 */
-	protected function parseMP3FrameHeader(int $offset):?stdClass{
+	private function parseMP3FrameHeader(int $offset):?stdClass{
 		fseek($this->fh, $offset, SEEK_SET);
 
 		$headerBytes = fread($this->fh, 4);

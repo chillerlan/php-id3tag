@@ -30,22 +30,22 @@ use const FILEINFO_MIME_ENCODING, FILEINFO_MIME_TYPE;
  * @property array|null $id3v1TagIndex
  * @property array|null $id3v2TagIndex
  */
-class ID3Data{
+final class ID3Data{
 
-	protected string $filename;
-	protected int $filesize;
-	protected int $v1tagsize = 0;
-	protected int $v2tagsize = 0;
-	protected string $mimeType;
-	protected string $mimeEncoding;
-	protected string $finfo;
-	protected ?int $framecount = null;
-	protected int $duration = 0;
-	protected int $bitrate;
-	protected ?array $id3v1 = null;
-	protected ?array $id3v2 = null;
-	protected ?array $id3v1TagIndex = null;
-	protected ?array $id3v2TagIndex = null;
+	private string $filename;
+	private int $filesize;
+	private int $v1tagsize = 0;
+	private int $v2tagsize = 0;
+	private string $mimeType;
+	private string $mimeEncoding;
+	private string $finfo;
+	private ?int $framecount = null;
+	private int $duration = 0;
+	private int $bitrate;
+	private ?array $id3v1 = null;
+	private ?array $id3v2 = null;
+	private ?array $id3v1TagIndex = null;
+	private ?array $id3v2TagIndex = null;
 
 	/**
 	 * ID3Data constructor.
