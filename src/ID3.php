@@ -136,8 +136,12 @@ class ID3{
 		if(fread($this->fh, 3) === 'TAG'){
 			fseek($this->fh, -256, SEEK_END);
 
-			$data->id3v1     = (new ID3v1)->parse(fread($this->fh, 256));
-			$data->v1tagsize = 256;
+			$properties = [
+				'id3v1'     => (new ID3v1)->parse(fread($this->fh, 256)),
+				'v1tagsize' => 256,
+			];
+
+			$data->setProperties($properties);
 		}
 
 		// check for an id3v2 tag
@@ -148,8 +152,12 @@ class ID3{
 			$tagsize = ID3Helpers::syncSafeInteger(unpack('N', fread($this->fh, 4))[1]);
 			fseek($this->fh, 0, SEEK_SET);
 
-			$data->id3v2     = $this->readID3v2Tag(fread($this->fh, $tagsize));
-			$data->v2tagsize = $tagsize + 10;
+			$properties = [
+				'id3v2'     => $this->readID3v2Tag(fread($this->fh, $tagsize)),
+				'v2tagsize' => $tagsize + 10,
+			];
+
+			$data->setProperties($properties);
 		}
 
 		$data->setProperties($this->getMP3Stats($data->filesize, $data->v1tagsize, $data->v2tagsize));
@@ -336,9 +344,9 @@ class ID3{
 		}
 
 		return [
-			'duration' => (int)round($duration),
-			'bitrate'  => (int)round($bitrate / $framecount),
-			'frames'   => $framecount,
+			'duration'   => (int)round($duration),
+			'bitrate'    => (int)round($bitrate / $framecount),
+			'framecount' => $framecount,
 		];
 	}
 

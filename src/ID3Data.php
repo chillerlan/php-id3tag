@@ -73,34 +73,20 @@ class ID3Data{
 	}
 
 	/**
-	 * @param string $property
-	 * @param mixed  $value
-	 *
-	 * @return void
-	 */
-	public function __set(string $property, $value):void{
-
-		if(!property_exists($this, $property)){
-			return;
-		}
-
-		$this->{$property} = $value;
-
-		if(in_array($property, ['id3v1', 'id3v2']) && is_array($value)){
-			$this->{$property.'TagIndex'} = array_column($value, 'tag');
-		}
-
-	}
-
-	/**
 	 *
 	 */
 	public function setProperties(iterable $properties):ID3Data{
 
 		foreach($properties as $property => $value){
 
-			if(property_exists($this, $property)){
-				$this->__set($property, $value);
+			if(!property_exists($this, $property)){
+				continue;
+			}
+
+			$this->{$property} = $value;
+
+			if(in_array($property, ['id3v1', 'id3v2']) && is_array($value)){
+				$this->{$property.'TagIndex'} = array_column($value, 'tag');
 			}
 
 		}
