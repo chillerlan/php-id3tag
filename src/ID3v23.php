@@ -12,7 +12,7 @@
 
 namespace chillerlan\ID3Tag;
 
-use function count, explode, implode, ord, sha1, strlen, strpos, strtolower, substr, trim;
+use function count, explode, implode, ord, sha1, strlen, strpos, strtolower, substr, trim, unpack;
 
 /**
  * @link http://id3.org/id3v2.3.0
@@ -54,7 +54,7 @@ class ID3v23 extends ID3v22{
 				break;
 			}
 
-			$length = $this->getFrameLength($length);
+			$length = unpack('N', $length)[1] ?? 0;
 			$index += 4;
 
 			// frame length exceeds tag size

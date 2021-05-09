@@ -10,7 +10,7 @@
 
 namespace chillerlan\ID3Tag;
 
-use function bin2hex, call_user_func_array, method_exists, ord, preg_match, strpos, substr, trim, unpack;
+use function bin2hex, call_user_func_array, method_exists, ord, preg_match, strpos, substr, trim;
 
 /**
  * @link http://id3.org/id3guide
@@ -301,13 +301,6 @@ abstract class ID3v2Abstract implements ParserInterface{
 	 */
 	protected function decodeString(string $data):string{
 		return trim(mb_convert_encoding($data, 'UTF-8', $this->encoding));
-	}
-
-	/**
-	 *
-	 */
-	protected function getFrameLength(string $raw):int{
-		return unpack('N', $raw)[1];
 	}
 
 	/**
