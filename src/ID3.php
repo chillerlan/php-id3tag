@@ -13,7 +13,7 @@ namespace chillerlan\ID3Tag;
 use finfo, stdClass;
 
 use function fclose, file_exists, filesize, floor, fopen, fread, fseek, ftell, in_array, is_file,
-	is_readable, is_resource, ord, round, sprintf, strlen, strtolower, substr, unpack;
+	is_readable, is_resource, ord, realpath, round, sprintf, strlen, strtolower, substr, unpack;
 
 use const FILEINFO_MIME_ENCODING, FILEINFO_MIME_TYPE, PHP_INT_MAX, SEEK_END, SEEK_SET;
 
@@ -121,10 +121,11 @@ class ID3{
 	/**
 	 * @throws \chillerlan\ID3Tag\ID3Exception
 	 */
-	public function read(string $file):ID3Data{
+	public function read(string $filename):ID3Data{
+		$file = realpath($filename);
 
-		if(!file_exists($file) || !is_file($file) || !is_readable($file)){
-			throw new ID3Exception(sprintf('invalid file: %s', $file));
+		if(!$file || !file_exists($file) || !is_file($file) || !is_readable($file)){
+			throw new ID3Exception(sprintf('invalid file: %s', $filename));
 		}
 
 		$finfo = [
