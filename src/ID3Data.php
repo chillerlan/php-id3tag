@@ -10,7 +10,9 @@
 
 namespace chillerlan\ID3Tag;
 
-use function array_column, in_array, is_array, property_exists;
+use finfo;
+use function array_column, filesize, in_array, is_array, property_exists;
+use const FILEINFO_MIME_ENCODING, FILEINFO_MIME_TYPE;
 
 /**
  * @property string $filename
@@ -48,12 +50,12 @@ class ID3Data{
 	/**
 	 * ID3Data constructor.
 	 */
-	public function __construct(iterable $properties = null){
-
-		if(!empty($properties)){
-			$this->setProperties($properties);
-		}
-
+	public function __construct(string $file){
+		$this->filename     = $file;
+		$this->filesize     = filesize($file);
+		$this->mimeType     = (new finfo(FILEINFO_MIME_TYPE))->file($file);
+		$this->mimeEncoding = (new finfo(FILEINFO_MIME_ENCODING))->file($file);
+		$this->finfo        = (new finfo)->file($file);
 	}
 
 	/**

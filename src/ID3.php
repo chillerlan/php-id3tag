@@ -10,12 +10,12 @@
 
 namespace chillerlan\ID3Tag;
 
-use finfo, stdClass;
+use stdClass;
 
-use function fclose, file_exists, filesize, floor, fopen, fread, fseek, ftell, in_array, is_file,
+use function fclose, file_exists, floor, fopen, fread, fseek, ftell, in_array, is_file,
 	is_readable, is_resource, ord, realpath, round, sprintf, strlen, strtolower, substr, unpack;
 
-use const FILEINFO_MIME_ENCODING, FILEINFO_MIME_TYPE, PHP_INT_MAX, SEEK_END, SEEK_SET;
+use const PHP_INT_MAX, SEEK_END, SEEK_SET;
 
 /**
  * @link http://id3.org/id3guide
@@ -128,15 +128,7 @@ class ID3{
 			throw new ID3Exception(sprintf('invalid file: %s', $filename));
 		}
 
-		$finfo = [
-			'filename'     => $file,
-			'filesize'     => filesize($file),
-			'mimeType'     => (new finfo(FILEINFO_MIME_TYPE))->file($file),
-			'mimeEncoding' => (new finfo(FILEINFO_MIME_ENCODING))->file($file),
-			'finfo'        => (new finfo)->file($file),
-		];
-
-		$data     = new ID3Data($finfo);
+		$data     = new ID3Data($file);
 		$this->fh = fopen($file, 'rb');
 
 		// invalid resource or 2GB limit on 32-bit
