@@ -96,12 +96,6 @@ class ID3{
 		],
 	];
 
-	protected const V2_PARSERS = [
-		2 => ID3v22::class,
-		3 => ID3v23::class,
-		4 => ID3v24::class,
-	];
-
 	/**
 	 * @var resource
 	 */
@@ -276,7 +270,7 @@ class ID3{
 			$tagdata = ID3Helpers::unsyncString($tagdata);
 		}
 
-		$parser = $this::V2_PARSERS[$id3version];
+		$parser = __NAMESPACE__.'\\ID3v2'.$id3version;
 
 		return (new $parser)->parse($tagdata);
 	}
