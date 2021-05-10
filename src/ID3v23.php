@@ -350,42 +350,39 @@ class ID3v23 extends ID3v22{
 	 * Picture data       <binary data>
 	 */
 	protected function APIC(array $frame):array{
-		$t    = strpos($frame['data'], "\x00", 1);
-		$mime = strtolower(substr($frame['data'], 1, $t - 1));
-		$type = ord(substr($frame['data'], $t + 1, 1));
+		$terminator = strpos($frame['data'], "\x00", 1);
+		$mime       = explode('/', strtolower(substr($frame['data'], 1, $terminator - 1)));
+		$type       = ord(substr($frame['data'], $terminator + 1, 1));
 
-		// wonky mime type @todo
-		$m = explode('/', $mime);
-
-		if(count($m) !== 2 || $m[0] !== 'image'){
+		if(count($mime) !== 2 || $mime[0] !== 'image'){
 
 			// is it a v2.2 style format?
-			if($m[0] !== 'image' && isset($this::imageFormatMagicbytes[$m[0]])){
-				$m    = ['image', $m[0]];
-				$mime = implode('/', $m);
+			if($mime[0] !== 'image' && isset($this::imageFormatMagicbytes[$mime[0]])){
+				$mime    = ['image', $mime[0]];
+				$mime = implode('/', $mime);
 			}
 			else{
 				return [];
 			}
 		}
 
-		if($m[1] === 'jpeg'){
-			$m[1] = 'jpg';
+		if($mime[1] === 'jpeg'){
+			$mime[1] = 'jpg';
 		}
 
-		$magicbytes = $this::imageFormatMagicbytes[$m[1]] ?? false;
+		$magicbytes = $this::imageFormatMagicbytes[$mime[1]] ?? false;
 
 		if(!$magicbytes){
 			return [];
 		}
 
-		$termpos = strpos($frame['data'], "\x00".$magicbytes, $t + 1);
+		$termpos = strpos($frame['data'], "\x00".$magicbytes, $terminator + 1);
 		$image   = substr($frame['data'], $termpos + 1);
 
 		return [
-			'desc'     => $this->decodeString(substr($frame['data'], $t + 2, $termpos - $t - 2)),
+			'desc'     => $this->decodeString(substr($frame['data'], $terminator + 2, $termpos - $terminator - 2)),
 			'content'  => $image, # 'data:'.$mime.';base64,'.base64_encode($image),
-			'format'   => $m[1],
+			'format'   => $mime[1],
 			'mime'     => $mime,
 			'typeID'   => $type,
 			'typeInfo' => $this::PICTURE_TYPE[$type] ?? '',
