@@ -47,56 +47,56 @@ foreach(new RecursiveIteratorIterator($iterator) as $path => $file){
 		'image'    => '',
 	];
 
-	foreach($data->id3v2 as $tagdata){
-		$tag = $tagdata['tag'];
+	foreach($data->id3v2 as $frame){
+		$name = $frame['name'];
 
 		// get some basic info
-		if($tag === 'TP1' || $tag === 'TPE1'){
-			$values['artist'] = $tagdata['content'];
+		if($name === 'TP1' || $name === 'TPE1'){
+			$values['artist'] = $frame['content'];
 		}
 
-		if($tag === 'TAL' || $tag === 'TALB'){
-			$values['album'] = $tagdata['content'];
+		if($name === 'TAL' || $name === 'TALB'){
+			$values['album'] = $frame['content'];
 		}
 
-		if($tag === 'TT2' || $tag === 'TIT2'){
-			$values['title'] = $tagdata['content'];
+		if($name === 'TT2' || $name === 'TIT2'){
+			$values['title'] = $frame['content'];
 		}
 
 		// ...
 
-		if($tag === 'PIC' || $tag === 'APIC'){
+		if($name === 'PIC' || $name === 'APIC'){
 
 			// no image data, skip
-			if(empty($tagdata['content'])){
+			if(empty($frame['content'])){
 				continue;
 			}
 
 			// determine filename
-			$imagefile = $imagedir.$tagdata['hash'].'.'.$tagdata['format'];
+			$imagefile = $imagedir.$frame['hash'].'.'.$frame['format'];
 
-			$values['image'] = $tagdata['hash'];
+			$values['image'] = $frame['hash'];
 
 			if(file_exists($imagefile)){
 				continue;
 			}
 
-			$size = getimagesizefromstring($tagdata['content']);
+			$size = getimagesizefromstring($frame['content']);
 
 			if(!$size){
 				// log getimagesize error...
 			}
 
 			$metadata = [
-				'hash'   => $tagdata['hash'],
-				'format' => $tagdata['format'],
+				'hash'   => $frame['hash'],
+				'format' => $frame['format'],
 				'size_h' => $size[0] ?? 0,
 				'size_w' => $size[1] ?? 0,
 				// ...
 			];
 
 			// save the image
-			file_put_contents($imagefile, $tagdata['content']);
+			file_put_contents($imagefile, $frame['content']);
 
 			// insert image metadata into image_table
 			var_dump($metadata);

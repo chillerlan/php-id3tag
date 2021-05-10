@@ -79,6 +79,7 @@ abstract class ID3v2Abstract implements ParserInterface{
 		'bmp'  => "\x42\x4d",
 	];
 
+	protected array $parsedFrames;
 	protected array $declaredFrames;
 	protected string $encoding;
 	protected string $terminator = "\x00";
@@ -139,10 +140,15 @@ abstract class ID3v2Abstract implements ParserInterface{
 	/**
 	 *
 	 */
-	protected function addTagInfo(array $parsedFrame, string $tagName):array{
-		return [
-			'tag'      => $tagName,
-			'tagInfo'  => $this->declaredFrames[$tagName] ?? '',
+	protected function addFrame(string $frameName, array $parsedFrame):void{
+
+		if(empty($parsedFrame)){
+			return;
+		}
+
+		$this->parsedFrames[] = [
+			'name'     => $frameName,
+			'info'     => $this->declaredFrames[$frameName] ?? '',
 			'encoding' => $this->encoding
 		] + $parsedFrame;
 	}

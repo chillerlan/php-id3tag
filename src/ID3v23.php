@@ -144,9 +144,9 @@ class ID3v23 extends ID3v22{
 	 * @inheritDoc
 	 */
 	public function parse(string $rawdata):array{
-		$frames    = [];
-		$index     = 0;
-		$rawlength = strlen($rawdata);
+		$this->parsedFrames = [];
+		$index              = 0;
+		$rawlength          = strlen($rawdata);
 
 		while($index < $rawlength){
 
@@ -203,7 +203,7 @@ class ID3v23 extends ID3v22{
 
 			$this->setTermpos($data);
 
-			$parsed = $this->parseFrame([
+			$parsedFrame = $this->parseFrame([
 				'name'   => $name,
 				'data'   => $data,
 				'length' => $length,
@@ -211,12 +211,10 @@ class ID3v23 extends ID3v22{
 				'status' => $status,
 			]);
 
-			if(!empty($parsed)){
-				$frames[] = $this->addTagInfo($parsed, $name);
-			}
+			$this->addFrame($name, $parsedFrame);
 		}
 
-		return $frames;
+		return $this->parsedFrames;
 	}
 
 	/**
